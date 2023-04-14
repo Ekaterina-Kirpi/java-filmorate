@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 @Slf4j
 
 
@@ -57,7 +59,7 @@ public class UserController {
 
     }
 
-    private void validateUser(User user) {
+    public void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() ||
                 !user.getEmail().contains("@") || user.getEmail().isBlank()) {
             throw new ValidationException("Email должен быть заполнен и содержать символ @");
