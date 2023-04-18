@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import javax.validation.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import javax.xml.validation.Validator;
 import java.time.LocalDate;
 import java.util.List;

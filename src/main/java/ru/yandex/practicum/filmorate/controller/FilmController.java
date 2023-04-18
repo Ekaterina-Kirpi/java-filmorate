@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -24,7 +23,7 @@ public class FilmController {
     private final Map<Integer, Film> filmsMap = new HashMap<>();
     private static int filmId = 1;
     private final int MAX_DESCRIPTION_LENGTH = 200;
-    private LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
+    private  final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
 
     @GetMapping
     public List<Film> getFilms() {
@@ -49,7 +48,7 @@ public class FilmController {
             throw new ValidationException(HttpStatus.NOT_FOUND,"Фильм не найден");
         } else {
             filmsMap.replace(id, film);
-            log.info("Фильм обновлен" + film.toString());
+            log.info("Фильм обновлен" + film);
         }
         return film;
     }
@@ -69,5 +68,5 @@ public class FilmController {
             throw new ValidationException(HttpStatus.BAD_REQUEST,"Продолжительность фильма должна быть положительной");
         }
     }
-    
+
 }
