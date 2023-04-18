@@ -22,7 +22,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Integer, Film> filmsMap = new HashMap<>();
     private static int filmId = 1;
-    private final int MAX_DESCRIPTION_LENGTH = 200;
+    private final int maxDescriptionLength = 200;
     private  final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
 
     @GetMapping
@@ -60,7 +60,7 @@ public class FilmController {
         } else if (film.getReleaseDate().isBefore(minReleaseDate)) {
             log.warn("Неверно указана дата выпуска");
             throw new ValidationException(HttpStatus.BAD_REQUEST,"Неверно указана дата выпуска");
-        } else if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
+        } else if (film.getDescription().length() > maxDescriptionLength) {
             log.warn("Максимальная длина описания - 200 символов");
             throw new ValidationException(HttpStatus.BAD_REQUEST,"Максимальная длина описания - 200 символов");
         } else if (film.getDuration() < 0) {
