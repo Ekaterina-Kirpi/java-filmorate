@@ -2,11 +2,13 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +23,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Integer, Film> filmsMap = new HashMap<>();
     private static int filmId = 1;
-    private boolean isFilmValid = false;
-    private int MAX_DESCRIPTION_LENGTH = 200;
+    private final int MAX_DESCRIPTION_LENGTH = 200;
     private LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
 
     @GetMapping
@@ -45,28 +46,28 @@ public class FilmController {
     public Film update(@Valid @RequestBody Film film) {
         int id = film.getId();
         if (!filmsMap.containsKey(id)) {
-            throw new ValidationException("Фильм не найден");
+            throw new ValidationException(HttpStatus.NOT_FOUND,"Фильм не найден");
         } else {
             filmsMap.replace(id, film);
             log.info("Фильм обновлен" + film.toString());
         }
         return film;
     }
-
+    @ResponseBody
     public void validateFilm(Film film) {
         if (filmsMap.containsKey(film.getId())) {
             log.warn("Такой фильм уже есть в коллекции");
-            throw new ValidationException("Такой фильм уже есть в коллекции");
+            throw new ValidationException(HttpStatus.BAD_REQUEST,"Такой фильм уже есть в коллекции");
         } else if (film.getReleaseDate().isBefore(minReleaseDate)) {
             log.warn("Неверно указана дата выпуска");
-            throw new ValidationException("Неверно указана дата выпуска");
+            throw new ValidationException(HttpStatus.BAD_REQUEST,"Неверно указана дата выпуска");
         } else if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
             log.warn("Максимальная длина описания - 200 символов");
-            throw new ValidationException("Максимальная длина описания - 200 символов");
+            throw new ValidationException(HttpStatus.BAD_REQUEST,"Максимальная длина описания - 200 символов");
         } else if (film.getDuration() < 0) {
             log.warn("Продолжительность фильма должна быть положительной");
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
+            throw new ValidationException(HttpStatus.BAD_REQUEST,"Продолжительность фильма должна быть положительной");
         }
-
     }
+    
 }
