@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public class User {
     @Past(message = "Не верно указана дата, это время еще не наступило")
     private LocalDate birthday;
 
-     public User(int id, String email, String login, String name, LocalDate birthday) {
+    public User(int id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
         this.email = email;
         this.login = login;
@@ -91,7 +90,6 @@ public class User {
         return Objects.hash(email);
 
     }
-
 
 
 }
