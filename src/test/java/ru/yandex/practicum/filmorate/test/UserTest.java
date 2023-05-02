@@ -72,11 +72,11 @@ public class UserTest {
         userService.createUser(user);
         user.setEmail("max.ru");
         assertThrows(ValidationException.class, () -> {
-            userService.validateUser(user);
+            userService.createUser(user);
         });
         user.setEmail("null");
         assertThrows(ValidationException.class, () -> {
-            userService.validateUser(user);
+            userService.createUser(user);
         });
     }
 
@@ -85,16 +85,8 @@ public class UserTest {
         userService.createUser(user);
         user.setLogin("  ");
         assertThrows(ValidationException.class, () -> {
-            userService.validateUser(user);
+            userService.createUser(user);
         });
-    }
-
-    @Test
-    void shouldValidationName() {
-        userService.createUser(user);
-        user.setName("");
-        userService.validateUser(user);
-        assertEquals(user.getLogin(), user.getName());
     }
 
     @Test
@@ -102,7 +94,7 @@ public class UserTest {
         userService.createUser(user);
         user.setBirthday(LocalDate.now().plusDays(7));
         assertThrows(ValidationException.class, () -> {
-            userService.validateUser(user);
+            userService.createUser(user);
         });
     }
 }

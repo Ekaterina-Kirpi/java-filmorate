@@ -64,6 +64,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (filmsMap.containsKey(film.getId())) {
             log.warn("Такой фильм уже есть в коллекции");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Такой фильм уже есть в коллекции");
+        } else if (film.getName() == null || film.getDescription() == null) {
+            throw new ValidationException(HttpStatus.BAD_REQUEST, "Некорректно введены данные фильма");
+
         } else if (film.getReleaseDate().isBefore(minReleaseDate)) {
             log.warn("Неверно указана дата выпуска");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Неверно указана дата выпуска");
@@ -74,6 +77,6 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.warn("Продолжительность фильма должна быть положительной");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Продолжительность фильма должна быть положительной");
         }
-    }
 
+    }
 }

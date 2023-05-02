@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -33,12 +32,10 @@ public class FilmService {
     }
 
     public Film createFilm(Film film) {
-        validateFilm(film);
         return filmStorage.createFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        validateFilm(film);
         return filmStorage.updateFilm(film);
     }
 
@@ -80,19 +77,6 @@ public class FilmService {
         return getFilms().stream()
                 .sorted(Collections.reverseOrder(Comparator.comparingInt(film -> film.getLikes().size()))).limit(count).collect(Collectors.toList());
     }
-
-    @ResponseBody
-    public void validateFilm(Film film) {
-        if (film.getReleaseDate().isBefore(minReleaseDate)) {
-            log.warn("Неверно указана дата выпуска");
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Неверно указана дата выпуска");
-        } else if (film.getDescription().length() > maxDescriptionLength) {
-            log.warn("Максимальная длина описания - 200 символов");
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Максимальная длина описания - 200 символов");
-        } else if (film.getDuration() < 0) {
-            log.warn("Продолжительность фильма должна быть положительной");
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Продолжительность фильма должна быть положительной");
-        }
-    }
-
 }
+
+

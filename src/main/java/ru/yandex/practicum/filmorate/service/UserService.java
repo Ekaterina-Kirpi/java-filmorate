@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +24,10 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        validateUser(user);
         return userStorage.createUser(user);
     }
 
     public User updateUser(User user) {
-        validateUser(user);
         return userStorage.updateUser(user);
     }
 
@@ -45,7 +42,7 @@ public class UserService {
     public void addToFriend(long userId, long friendId) {
         if (getUserById(userId).getFriends().contains(friendId)) {
             log.warn("Пользователи уже друзья");
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Пользователь " + userId + " уже жружит с " + friendId);
+            throw new ValidationException(HttpStatus.CONFLICT, "Пользователь " + userId + " уже жружит с " + friendId);
 
         }
         User user = getUserById(userId);
@@ -53,8 +50,8 @@ public class UserService {
         user.getFriends().add(friendId);
         friend.getFriends().add(userId);
 
-        log.info("Пользователь {} добавлен в друзья к {}", friendId, userId);
-        log.info("Пользователь {} добавлен в друзья к {}", userId, friendId);
+        log.info("Пользователь " + friendId + " добавлен в друзья к " + userId);
+        log.info("Пользователь " + userId + " добавлен в друзья к " + friendId);
     }
 
     public void deleteFromFriend(long userId, long friendId) {
@@ -65,8 +62,8 @@ public class UserService {
         }
         getUserById(userId).getFriends().remove(friendId);
         getUserById(friendId).getFriends().remove(userId);
-        log.info("Пользователь {} удалён из друзей {}", friendId, userId);
-        log.info("Пользователь {} удалён из друзей {}", userId, friendId);
+        log.info("Пользователь " + friendId + "удалён из друзей " + userId);
+        log.info("Пользователь " + userId + " удалён из друзей " + friendId);
 
     }
 
@@ -86,17 +83,4 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public void validateUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@") || user.getEmail().isBlank()) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Email должен быть заполнен и содержать символ @");
-        } else if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ") || user.getLogin().isBlank()) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Логин не должен быть пустым и содержать пробелы");
-        } else if (user.getBirthday() != null && user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Дата рождения не может быть в будущем");
-        }
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-
-        }
-    }
 }

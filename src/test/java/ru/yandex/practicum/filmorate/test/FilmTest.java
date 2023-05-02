@@ -78,7 +78,7 @@ public class FilmTest {
         String s = "Какой-то очень интересный фильм, длинный, и описание так же но для проверки достаточно повторить это 2 раза".repeat(2);
         film.setDescription(s);
         assertThrows(ValidationException.class, () -> {
-            filmService.validateFilm(film);
+            filmService.createFilm(film);
         });
     }
 
@@ -88,7 +88,7 @@ public class FilmTest {
         film.setDuration(-1);
 
         assertThrows(ValidationException.class, () -> {
-            filmService.validateFilm(film);
+            filmService.createFilm(film);
         });
     }
 
@@ -98,7 +98,7 @@ public class FilmTest {
         film.setReleaseDate(LocalDate.of(1700, 1, 1));
 
         assertThrows(ValidationException.class, () -> {
-            filmService.validateFilm(film);
+            filmService.createFilm(film);
         });
     }
 
