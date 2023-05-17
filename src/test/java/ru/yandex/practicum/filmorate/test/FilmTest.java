@@ -1,12 +1,14 @@
-package ru.yandex.practicum.filmorate.controllerTest;
+package ru.yandex.practicum.filmorate.test;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.model.Film;
-
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+
 import javax.xml.validation.Validator;
 import java.time.LocalDate;
 import java.util.List;
@@ -14,28 +16,25 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class FilmControllerTest {
+public class FilmTest {
 
-
-    //   @Autowired
-    private FilmController filmController;
     private Film film;
-
     private Validator validator;
+    private static FilmService filmService;
 
     @BeforeEach
     void beforeEach() {
-        filmController = new FilmController();
+        filmService = new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage());
         film = new Film(1, "Пятеро друзей", "Пятеро друзей приезжают в город Бризуль." +
                 " Здесь они хотят разыскать господина Огюста Куглова, который задолжал им 20 миллионов.",
-                LocalDate.of(1980, 03, 25), 126);
+                LocalDate.of(1980, 3, 25), 126, null);
     }
 
 
     @Test
     void shouldCreate() {
-        filmController.create(film);
-        List<Film> filmList = filmController.getFilms();
+        filmService.createFilm(film);
+        List<Film> filmList = filmService.getFilms();
         assertEquals(1, filmList.size(), "Количество фильмов не совпадает");
         assertEquals(film.getName(), filmList.get(0).getName(), "Название фильма неверно");
         assertEquals(film.getDescription(), filmList.get(0).getDescription(), "Некорректное описание фильма");
@@ -46,12 +45,12 @@ public class FilmControllerTest {
 
     @Test
     void shouldUpdate() {
-        filmController.create(film);
-        List<Film> filmList = filmController.getFilms();
+        filmService.createFilm(film);
+        List<Film> filmList = filmService.getFilms();
         film.setName("Новое название");
         film.setDescription("Новое описание");
         film.setReleaseDate(LocalDate.of(2022, 1, 1));
-        Film updatedFilm = filmController.update(film);
+        Film updatedFilm = filmService.updateFilm(film);
         assertEquals(film.getId(), updatedFilm.getId());
         assertEquals(film.getName(), updatedFilm.getName());
         assertEquals(film.getDescription(), updatedFilm.getDescription());
@@ -61,52 +60,45 @@ public class FilmControllerTest {
 
     @Test
     void shouldGetAllFilms() {
-        filmController.create(film);
-        Film newFilm = new Film(2, "2", "Описание", LocalDate.of(2022, 1, 1), 150);
-        filmController.create(newFilm);
-        List<Film> filmList = filmController.getFilms();
+        filmService.createFilm(film);
+        Film newFilm = new Film(2, "2", "Описание",
+                LocalDate.of(2022, 1, 1), 150, null);
+        filmService.createFilm(newFilm);
+        List<Film> filmList = filmService.getFilms();
         assertEquals(2, filmList.size());
         assertTrue(filmList.contains(film));
         assertTrue(filmList.contains(newFilm));
     }
 
 
-    @Test
-    public void shouldValidateEmptyName() {
-        filmController.create(film);
-        film.setName("");
-        assertThrows(ValidationException.class, () -> {
-            filmController.validateFilm(film);
-        });
-    }
 
     @Test
     public void shouldValidateLongDescription() {
-        filmController.create(film);
+        filmService.createFilm(film);
         String s = "Какой-то очень интересный фильм, длинный, и описание так же но для проверки достаточно повторить это 2 раза".repeat(2);
         film.setDescription(s);
         assertThrows(ValidationException.class, () -> {
-            filmController.validateFilm(film);
+            filmService.createFilm(film);
         });
     }
 
     @Test
     public void shouldValidateNegativeDuration() {
-        filmController.create(film);
+        filmService.createFilm(film);
         film.setDuration(-1);
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validateFilm(film);
+            filmService.createFilm(film);
         });
     }
 
     @Test
     public void shouldValidateInvalidReleaseDate() {
-        filmController.create(film);
+        filmService.createFilm(film);
         film.setReleaseDate(LocalDate.of(1700, 1, 1));
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validateFilm(film);
+            filmService.createFilm(film);
         });
     }
 
