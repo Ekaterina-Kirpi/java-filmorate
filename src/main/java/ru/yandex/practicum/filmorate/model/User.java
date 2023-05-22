@@ -2,12 +2,14 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +17,9 @@ import java.util.Set;
 @Slf4j
 @Builder
 @Data
+@NoArgsConstructor
 
-public class User {
+public class User implements Serializable {
 
     private long id;
     @Email(message = "Адрес электронной почты должен содеражать @")
@@ -39,4 +42,10 @@ public class User {
         this.friends = friends == null ? new HashSet<>() : friends;
     }
 
+    public User(String login, String name, String email, LocalDate birthday) {
+        this.login = login;
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+    }
 }

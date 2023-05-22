@@ -6,21 +6,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.dao.FriendshipDbStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Slf4j
 @Service
 
 public class UserService {
     private final UserStorage userStorage;
-
+    private final FriendshipDbStorage friendshipDbStorage;
     @Autowired
-    public UserService(UserStorage userStorage) {
-
+    public UserService(UserStorage userStorage, FriendshipDbStorage friendshipDbStorage) {
         this.userStorage = userStorage;
+        this.friendshipDbStorage = friendshipDbStorage;
     }
 
     public User createUser(User user) {
@@ -40,47 +45,24 @@ public class UserService {
     }
 
     public void addToFriend(long userId, long friendId) {
-        if (getUserById(userId).getFriends().contains(friendId)) {
-            log.warn("Пользователи уже друзья");
-            throw new ValidationException(HttpStatus.CONFLICT, "Пользователь " + userId + " уже жружит с " + friendId);
-
+        if(getUserById(userId) == null || getUserById(friendId) == null)
+        {
+            throw new ValidationException(HttpStatus.NOT_FOUND, "Пользователь не найден");
         }
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
-
-        log.info("Пользователь " + friendId + " добавлен в друзья к " + userId);
-        log.info("Пользователь " + userId + " добавлен в друзья к " + friendId);
+        friendshipDbStorage.addToFriend(userId, friendId);
     }
 
     public void deleteFromFriend(long userId, long friendId) {
-        if (!userStorage.getUserById(userId).getFriends().contains(friendId)) {
-            log.warn("Пользователи не друзья",
-                    userId, friendId);
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Пользователя " + userId + " нет в друзьях у пользователя " + friendId);
-        }
-        getUserById(userId).getFriends().remove(friendId);
-        getUserById(friendId).getFriends().remove(userId);
-        log.info("Пользователь " + friendId + "удалён из друзей " + userId);
-        log.info("Пользователь " + userId + " удалён из друзей " + friendId);
-
+        friendshipDbStorage.deleteFromFriend(userId, friendId);
     }
 
 
     public List<User> getCommonFriends(long userId, long friendId) {
-        return getUserById(userId).getFriends()
-                .stream()
-                .filter(getUserById(friendId).getFriends()::contains)
-                .map(this::getUserById)
-                .collect(Collectors.toList());
+        return friendshipDbStorage.getCommonFriends(userId, friendId);
     }
 
     public List<User> getAllFriends(long id) {
-        return getUserById(id).getFriends()
-                .stream()
-                .map(this::getUserById)
-                .collect(Collectors.toList());
+        return friendshipDbStorage.getFriends(id);
     }
 
 }

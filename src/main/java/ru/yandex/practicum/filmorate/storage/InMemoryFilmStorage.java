@@ -6,13 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/*
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -23,7 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        validateFilm(film);
+       // validateFilm(film);
         film.setId(filmId);
         filmsMap.put(film.getId(), film);
         filmId++;
@@ -58,7 +59,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmsMap.get(id);
     }
 
-    @ResponseBody
+    /*@ResponseBody
     public void validateFilm(Film film) {
         int maxDescriptionLength = 200;
         if (filmsMap.containsKey(film.getId())) {
@@ -78,5 +79,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Продолжительность фильма должна быть положительной");
         }
 
-    }
-}
+     */
+
+
+

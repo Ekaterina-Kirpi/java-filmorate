@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+/*
 
 @Slf4j
 @Component
@@ -25,7 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
             log.warn("Пользователь уже существует");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Пользователь уже существует");
         } else {
-            validateUser(user);
+            //validateUser(user);
             user.setId(userId);
             userMap.put(user.getId(), user);
             userId++;
@@ -40,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (!userMap.containsKey(id)) {
             throw new ValidationException(HttpStatus.NOT_FOUND, "Пользователя не существует");
         } else {
-            validateUser(user);
+           // validateUser(user);
             userMap.replace(id, user);
             log.info("Пользователь обнавлен");
             return user;
@@ -62,7 +64,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
 
-    public void validateUser(User user) {
+   /* public void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@") || user.getEmail().isBlank()) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Email должен быть заполнен и содержать символ @");
         } else if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ") || user.getLogin().isBlank()) {
@@ -73,6 +75,10 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
+
     }
 
-}
+    */
+
+
+

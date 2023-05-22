@@ -22,13 +22,13 @@ public class FilmTest {
     private Validator validator;
     private static FilmService filmService;
 
-    @BeforeEach
-    void beforeEach() {
-        filmService = new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage());
-        film = new Film(1, "Пятеро друзей", "Пятеро друзей приезжают в город Бризуль." +
-                " Здесь они хотят разыскать господина Огюста Куглова, который задолжал им 20 миллионов.",
-                LocalDate.of(1980, 3, 25), 126, null);
-    }
+//    @BeforeEach
+//    void beforeEach() {
+//        filmService = new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage());
+//        film = new Film(1, "Пятеро друзей", "Пятеро друзей приезжают в город Бризуль." +
+//                " Здесь они хотят разыскать господина Огюста Куглова, который задолжал им 20 миллионов.",
+//                LocalDate.of(1980, 3, 25), 126, null);
+//    }
 
 
     @Test
