@@ -9,12 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.dao.FriendshipDbStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 @Slf4j
 @Service
@@ -22,6 +17,7 @@ import static java.lang.String.format;
 public class UserService {
     private final UserStorage userStorage;
     private final FriendshipDbStorage friendshipDbStorage;
+
     @Autowired
     public UserService(UserStorage userStorage, FriendshipDbStorage friendshipDbStorage) {
         this.userStorage = userStorage;
@@ -45,8 +41,7 @@ public class UserService {
     }
 
     public void addToFriend(long userId, long friendId) {
-        if(getUserById(userId) == null || getUserById(friendId) == null)
-        {
+        if (getUserById(userId) == null || getUserById(friendId) == null) {
             throw new ValidationException(HttpStatus.NOT_FOUND, "Пользователь не найден");
         }
         friendshipDbStorage.addToFriend(userId, friendId);
