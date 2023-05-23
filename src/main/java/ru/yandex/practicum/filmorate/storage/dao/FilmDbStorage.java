@@ -17,12 +17,10 @@ import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.mapper.GenreRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
@@ -48,6 +46,7 @@ public class FilmDbStorage implements FilmStorage {
     private FilmRowMapper filmRowMapper;
 
     private final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
+
     @Override
     public Film createFilm(Film film) {
         validateFilm(film);
@@ -87,16 +86,23 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public void deleteFilm(long id) {
+        String sql = "DELETE FROM films " +
+                "WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
     public List<Film> getFilms() {
-        String sqlAllFilms = "SELECT f.*, m.name as mpa_name " +
+        String sql = "SELECT f.*, m.name as mpa_name " +
                 "FROM FILMS AS f JOIN rating_mpa AS m ON f.rating_id = m.rating_id";
-        return namedParameterJdbcTemplate.query(sqlAllFilms, filmRowMapper);
+        return namedParameterJdbcTemplate.query(sql, filmRowMapper);
     }
 
     @Override
     public Film getFilmById(long id) {
-        String sqlFilmById = "SELECT *, rm.name as mpa_name FROM FILMS f, rating_mpa rm WHERE rm.Rating_id = f.Rating_id AND ID = ? ";
-        List<Film> films = jdbcTemplate.query(sqlFilmById, filmRowMapper, id);
+        String sql = "SELECT *, rm.name as mpa_name FROM FILMS f, rating_mpa rm WHERE rm.Rating_id = f.Rating_id AND ID = ? ";
+        List<Film> films = jdbcTemplate.query(sql, filmRowMapper, id);
         if (films.isEmpty()) {
             throw new ValidationException(HttpStatus.NOT_FOUND, String.format("Фильм с id = %s не найден", id));
         }

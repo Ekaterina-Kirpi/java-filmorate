@@ -9,6 +9,8 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
+    void deleteFilm(long id);
+
     List<Film> getFilms();
 
     Film getFilmById(long id);
@@ -22,4 +24,6 @@ public interface FilmStorage {
     void updateFilmGenre(Film film);
 
     void setFilmGenre(Film film);
+
+
 }

@@ -73,14 +73,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
-        String sqlAllUsers = "select * from users";
-        return namedParameterJdbcTemplate.query(sqlAllUsers, userRowMapper);
+        String sql = "SELECT * FROM users";
+        return namedParameterJdbcTemplate.query(sql, userRowMapper);
     }
 
     @Override
     public User getUserById(long id) {
-        String sqlUserById = "select * from users where users.id = ?";
-        List<User> users = jdbcTemplate.query(sqlUserById, userRowMapper, id);
+        String sql = "SELECT * FROM users WHERE users.id = ?";
+        List<User> users = jdbcTemplate.query(sql, userRowMapper, id);
         if (users.isEmpty()) {
             throw new ValidationException(HttpStatus.NOT_FOUND, "Пользователь не найден");
         }
