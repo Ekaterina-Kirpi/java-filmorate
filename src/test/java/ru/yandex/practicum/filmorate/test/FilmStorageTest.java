@@ -52,6 +52,9 @@ public class FilmStorageTest {
 
     @Test
     void getFilmBadId() {
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> filmDbStorage.getFilmById(-1));
+        assertEquals(exception.getStatus(), HttpStatus.NOT_FOUND);
     }
 
     @Test

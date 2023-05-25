@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,12 @@ public class LikeDbStorage implements LikesStorage {
     public void addLike(long filmID, long userID) {
         String sql = "INSERT INTO likes (film_id, user_id) " +
                 "VALUES (?,?)";
-        jdbcTemplate.update(sql, filmID, userID);
+        try {
+            jdbcTemplate.update(sql, filmID, userID);
+        } catch (DataAccessException exception) {
+            throw new ValidationException(HttpStatus.OK, "Лайк уже поставлен");
+        }
+
     }
 
     public void deleteLike(long filmID, long userID) {
@@ -34,10 +40,10 @@ public class LikeDbStorage implements LikesStorage {
     }
 
     public List<Film> getTopLikedFilms(long count) {
-        String sql = "SELECT films.*, mpa.name as mpa_name " +
+        String sql = "SELECT films.*, mpa.name AS mpa_name " +
                 "FROM films " +
                 "LEFT JOIN likes ON films.id=likes.film_id " +
-                "JOIN rating_mpa as mpa ON mpa.rating_id = films.rating_id " +
+                "JOIN rating_mpa AS mpa ON mpa.rating_id = films.rating_id " +
                 "GROUP BY films.id " +
                 "ORDER BY COUNT(likes.user_id) DESC " +
                 "LIMIT ?";

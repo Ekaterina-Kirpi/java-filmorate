@@ -39,10 +39,12 @@ public class FilmService {
     }
 
     public List<Film> getFilms() {
+
         return filmStorage.loadFilmGenres(filmStorage.getFilms());
     }
 
     public Film getFilmById(long id) {
+
         return filmStorage.loadFilmGenre(filmStorage.getFilmById(id));
     }
 

@@ -187,7 +187,7 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getName() == null || film.getDescription() == null) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Некорректно введены данные фильма");
 
-        } else if (film.getReleaseDate().isBefore(minReleaseDate)) {
+        } else if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(minReleaseDate)) {
             log.warn("Неверно указана дата выпуска");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Неверно указана дата выпуска");
         } else if (film.getDescription().length() > maxDescriptionLength) {
@@ -197,7 +197,6 @@ public class FilmDbStorage implements FilmStorage {
             log.warn("Продолжительность фильма должна быть положительной");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Продолжительность фильма должна быть положительной");
         }
-
     }
 
 }
