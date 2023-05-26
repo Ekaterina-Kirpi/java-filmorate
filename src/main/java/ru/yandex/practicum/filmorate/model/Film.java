@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -18,7 +19,6 @@ import java.util.Set;
 @Data
 @Builder
 @NoArgsConstructor
-
 public class Film implements Serializable {
 
     private long id;
@@ -30,6 +30,7 @@ public class Film implements Serializable {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private Integer duration;
+    @NotNull
     private Mpa mpa;
     private Set<Genre> genres = new HashSet<>();
     private Set<Long> likes;

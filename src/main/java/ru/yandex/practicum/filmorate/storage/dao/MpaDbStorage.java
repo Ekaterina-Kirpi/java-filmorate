@@ -18,10 +18,14 @@ import java.util.List;
 @Component
 @Primary
 public class MpaDbStorage implements MpaStorage {
+    private final JdbcTemplate jdbcTemplate;
+    private final MpaRowMapper mpaRowMapper;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private MpaRowMapper mpaRowMapper;
+    public MpaDbStorage(JdbcTemplate jdbcTemplate, MpaRowMapper mpaRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.mpaRowMapper = mpaRowMapper;
+    }
 
     @Override
     public List<Mpa> getAllRatingMpa() {

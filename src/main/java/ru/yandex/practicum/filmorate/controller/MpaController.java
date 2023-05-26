@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/mpa")
 @Slf4j
-
 public class MpaController {
     private final MpaService mpaService;
 
@@ -25,11 +24,13 @@ public class MpaController {
 
     @GetMapping
     public List<Mpa> findAll() {
+        log.info("Получение всех рейтингов");
         return mpaService.getAll();
     }
 
     @GetMapping("/{id}")
     public Mpa getMpaById(@PathVariable Integer id) {
+        log.info("Получение рейтинга по id");
         return mpaService.getMpaById(id);
     }
 }

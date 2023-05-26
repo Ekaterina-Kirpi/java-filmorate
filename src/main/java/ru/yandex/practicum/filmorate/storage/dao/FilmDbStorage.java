@@ -33,19 +33,26 @@ import static java.util.stream.Collectors.toSet;
 @Component
 @Primary
 public class FilmDbStorage implements FilmStorage {
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private GenreStorage genreStorage;
-    @Autowired
-    private GenreRowMapper genreRowMapper;
+
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    private final GenreStorage genreStorage;
+
+    private final GenreRowMapper genreRowMapper;
+
+    private final FilmRowMapper filmRowMapper;
+
+    static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
     @Autowired
-    private FilmRowMapper filmRowMapper;
-
-    private final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
+    public FilmDbStorage(NamedParameterJdbcTemplate namedParameterJdbcTemplate, JdbcTemplate jdbcTemplate, GenreStorage genreStorage, GenreRowMapper genreRowMapper, FilmRowMapper filmRowMapper) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
+        this.genreStorage = genreStorage;
+        this.genreRowMapper = genreRowMapper;
+        this.filmRowMapper = filmRowMapper;
+    }
 
     @Override
     public Film createFilm(Film film) {
@@ -65,7 +72,6 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    @Override
     public Film updateFilm(Film film) {
         validateFilm(film);
         String sql = "UPDATE FILMS SET NAME = :name, DESCRIPTION = :description, DURATION = :duration, RELEASE_DATE = :release_date, " +
@@ -85,6 +91,7 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
+
     @Override
     public void deleteFilm(long id) {
         String sql = "DELETE FROM films " +
@@ -101,7 +108,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(long id) {
-        String sql = "SELECT *, rm.name as mpa_name FROM FILMS f, rating_mpa rm WHERE rm.Rating_id = f.Rating_id AND ID = ? ";
+        String sql = "SELECT *, rm.name AS mpa_name " +
+                "FROM FILMS f, rating_mpa rm WHERE rm.Rating_id = f.Rating_id AND ID = ? ";
         List<Film> films = jdbcTemplate.query(sql, filmRowMapper, id);
         if (films.isEmpty()) {
             throw new ValidationException(HttpStatus.NOT_FOUND, String.format("Фильм с id = %s не найден", id));
@@ -187,7 +195,7 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getName() == null || film.getDescription() == null) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Некорректно введены данные фильма");
 
-        } else if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(minReleaseDate)) {
+        } else if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             log.warn("Неверно указана дата выпуска");
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Неверно указана дата выпуска");
         } else if (film.getDescription().length() > maxDescriptionLength) {

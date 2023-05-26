@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/genres")
-
 @Slf4j
 public class GenreController {
     private final GenreService genreService;
@@ -21,16 +20,18 @@ public class GenreController {
     @Autowired
     public GenreController(GenreService genreService) {
         this.genreService = genreService;
-
     }
 
     @GetMapping
     public List<Genre> getAll() {
+        log.info("Получение списка жанров ");
         return genreService.getAll();
     }
 
     @GetMapping("/{id}")
     public Genre getGenreById(@PathVariable Integer id) {
+        log.info("Получение жанра по id ");
+
         return genreService.getGenreById(id);
     }
 

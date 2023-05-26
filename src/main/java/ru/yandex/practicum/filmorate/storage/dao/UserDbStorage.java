@@ -23,21 +23,23 @@ import java.util.Map;
 @Slf4j
 @Component
 @Primary
-
 public class UserDbStorage implements UserStorage {
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final UserRowMapper userRowMapper;
 
     @Autowired
-    private UserRowMapper userRowMapper;
+
+    public UserDbStorage(NamedParameterJdbcTemplate namedParameterJdbcTemplate, JdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
+        this.userRowMapper = userRowMapper;
+    }
 
     @Override
     public User createUser(User user) {
         validateUser(user);
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("USERS")
-                .usingGeneratedKeyColumns("ID");
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("USERS").usingGeneratedKeyColumns("ID");
         Map<String, Object> values = new HashMap<>();
         values.put("email", user.getEmail());
         values.put("login", user.getLogin());
@@ -53,14 +55,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User updateUser(User user) {
         validateUser(user);
-        String sql = "UPDATE USERS SET EMAIL = :email, LOGIN = :login, NAME = :name," +
-                "BIRTHDAY = :birthday where id = :id";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("email", user.getEmail())
-                .addValue("login", user.getLogin())
-                .addValue("name", user.getName())
-                .addValue("birthday", user.getBirthday())
-                .addValue("id", user.getId());
+        String sql = "UPDATE USERS SET EMAIL = :email, LOGIN = :login, NAME = :name," + "BIRTHDAY = :birthday where id = :id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource().addValue("email", user.getEmail()).addValue("login", user.getLogin()).addValue("name", user.getName()).addValue("birthday", user.getBirthday()).addValue("id", user.getId());
 
         int count = namedParameterJdbcTemplate.update(sql, sqlParameterSource);
         if (count == 0) {
@@ -86,8 +82,6 @@ public class UserDbStorage implements UserStorage {
         }
         return users.get(0);
     }
-
-
 
 
     public void validateUser(User user) {

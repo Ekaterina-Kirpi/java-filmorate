@@ -37,7 +37,7 @@ public class FilmStorageTest {
         jdbcTemplate.update(sql);
     }
 
-    @Test
+   @Test
     void getAllFilms() {
         Film film1 = createFilm1();
         Film film2 = createFilm2();
@@ -50,6 +50,7 @@ public class FilmStorageTest {
 
     }
 
+
     @Test
     void getFilmBadId() {
         ValidationException exception = assertThrows(ValidationException.class,
@@ -57,7 +58,7 @@ public class FilmStorageTest {
         assertEquals(exception.getStatus(), HttpStatus.NOT_FOUND);
     }
 
-    @Test
+   @Test
     void addFilm() {
         Film film = createFilm1();
         film = filmDbStorage.createFilm(film);
@@ -65,6 +66,7 @@ public class FilmStorageTest {
         assertEquals(films.size(), 1);
         assertTrue(films.contains(film));
     }
+
 
     @Test
     void updateFilm() {

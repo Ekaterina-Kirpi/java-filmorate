@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-
 public class FilmService {
     private final FilmStorage filmStorage;
     private final int maxDescriptionLength = 200;

@@ -9,7 +9,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,9 +17,7 @@ import java.util.Set;
 @Builder
 @Data
 @NoArgsConstructor
-
-public class User implements Serializable {
-
+public class User {
     private long id;
     @Email(message = "Адрес электронной почты должен содеражать @")
     @NotBlank(message = "Укажите адрес электронной почты, поле не должно быть пустым")

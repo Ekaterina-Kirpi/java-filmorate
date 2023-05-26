@@ -13,7 +13,6 @@ import java.util.List;
 
 @Slf4j
 @Service
-
 public class UserService {
     private final UserStorage userStorage;
     private final FriendshipDbStorage friendshipDbStorage;

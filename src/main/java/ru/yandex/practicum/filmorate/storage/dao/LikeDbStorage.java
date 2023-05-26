@@ -15,9 +15,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LikeDbStorage implements LikesStorage {
-
     private final JdbcTemplate jdbcTemplate;
-    private final FilmRowMapper filmRowMapper = new FilmRowMapper();
+    private final FilmRowMapper filmRowMapper;
+
 
     public void addLike(long filmID, long userID) {
         String sql = "INSERT INTO likes (film_id, user_id) " +

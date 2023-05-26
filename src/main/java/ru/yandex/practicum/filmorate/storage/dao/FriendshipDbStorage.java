@@ -15,10 +15,15 @@ import java.util.List;
 @Component
 @Primary
 public class FriendshipDbStorage implements FriendshipStorage {
+
+    private final JdbcTemplate jdbcTemplate;
+    private final UserRowMapper userRowMapper;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private UserRowMapper userRowMapper;
+    public FriendshipDbStorage(JdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.userRowMapper = userRowMapper;
+    }
 
     @Override
     public void addToFriend(long userId, long friendId) {
