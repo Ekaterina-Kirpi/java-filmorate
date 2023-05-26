@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.Email;
@@ -15,9 +16,8 @@ import java.util.Set;
 @Slf4j
 @Builder
 @Data
-
+@NoArgsConstructor
 public class User {
-
     private long id;
     @Email(message = "Адрес электронной почты должен содеражать @")
     @NotBlank(message = "Укажите адрес электронной почты, поле не должно быть пустым")
@@ -39,4 +39,10 @@ public class User {
         this.friends = friends == null ? new HashSet<>() : friends;
     }
 
+    public User(String login, String name, String email, LocalDate birthday) {
+        this.login = login;
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+    }
 }
