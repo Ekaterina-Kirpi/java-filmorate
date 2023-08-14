@@ -1,103 +1,51 @@
 # java-filmorate
-
-Бэкенд для сервиса, который будет работать с фильмами и оценками пользователей, а также возвращать топ фильмов, рекомендованных к просмотру.
-Template repository for Filmorate project.
+Данный проект представляет собой бэкенд для сервиса, который работает с фильмами и оценками пользователей и рекомендует фильмы к просмотру.
+Технологии: Java + Spring Boot + Maven + Lombok + JUnit + RESTful API + JDBC
 
 ![Untitled (2)](https://github.com/Ekaterina-Kirpi/java-filmorate/assets/119094349/08c33e50-839a-42ca-a03f-781c486b2df3)
 
 
-films
-Содержит информацию о фильмах.
+Основная задача приложения - решить проблему поиска фильмов на вечер. С его помощью вы можете легко найти фильм, который вам понравится.
 
-первичный ключ id — идентификатор фильма;
-name - название фильма;
-description - описание фильма;
-release_date - дата выхода фильма;
-duration - длительность фильма;
-внешний ключ rating_id (ссылается на таблицу ratings) — идентификатор рейтинга.
-ratings
-Содержит информацию о рейтингах кино.
+Реализованы следующие эндпоинты:
+1. Фильмы
+POST /films - создание фильма
 
-первичный ключ id — идентификатор рейтинга;
-name - название рейтинга.
-ganres
-Содержит информацию о жанрах кино.
+PUT /films - редактирование фильма
 
-первичный ключ id — идентификатор жанра;
-name — название жанра.
-film_genres
-Содержит информацию о том какие фильмы к каким жанрам относятся. -внешний ключ film_id (отсылает к таблице films) — идентификатор фильма; -внешний ключ genre_id (отсылает к таблице ganres) — идентификатор жанра.
+GET /films - получение списка всех фильмов
 
-users
-Содержит информацию о пользователях.
+GET /films/{id} - получение информации о фильме по его id
 
-первичный ключ id — идентификатор пользователя;
-login - логин пользователя;
-name - имя пользователя;
-email - электронная почта;
-birthday - день рождения.
-friends
-Содержит информацию, какие пользователи являются друзьями.
+PUT /films/{id}/like/{userId} — поставить лайк фильму
 
-внешний ключ user_id (отсылает к таблице users) — идентификатор пользователя;
-внешний ключ friend_id (отсылает к таблице users) — идентификатор друга.
-likes
-Содержит информацию об отметках "мне нравится".
+DELETE /films/{id}/like/{userId} — удалить лайк фильма
 
-внешний ключ film_id (отсылает к таблице films) — идентификатор фильма;
-внешний ключ user_id (отсылает к таблице users) — идентификатор пользователя.
-Примеры запросов:
-Добавить фильм
+GET /films/popular?count={count} — возвращает список из первых count фильмов по количеству лайков. Если значение параметра count не задано, возвращает первые 10.
 
-INSERT INTO films (name, description, release_date, duration, rating_id)
-VALUES (name, description, 2020.10.11, 120, 3)
+2. Пользователи
+POST /users - создание пользователя
 
-Обновить фильм c id = 1
+PUT /users - редактирование пользователя
 
-UPDATE films
-SET name = new_name,description = new_description, release_date = 2020.12.12, duration = 160, rating_id = 2
-WHERE id = 1;
+GET /users - получение списка всех пользователей
 
-Удалить фильм c id = 1
+GET /users/{id} - получение данных о пользователе по id
 
-DELETE FROM films
-WHERE id = 1;
+PUT /users/{id}/friends/{friendId} — добавление в друзья
 
-Список всех жанров
+DELETE /users/{id}/friends/{friendId} — удаление из друзей
 
-SELECT *
-FROM genres
-ORDER BY id;
+GET /users/{id}/friends — возвращает список друзей
 
-Получить жанр c id = 1
+GET /users/{id}/friends/common/{otherId} — возвращает список друзей, общих с другим пользователем
 
-SELECT *
-FROM genres
-WHERE id=1;
 
-Добавить лайк film_id = 1, user_id = 2
 
-MERGE INTO likes (FILM_ID,USER_ID)
-VALUES (1,2);
 
-Получить пользователя c id = 1
 
-SELECT *
-FROM users
-WHERE id = 1;
 
-Получить друзей пользователя c id = 1
 
-SELECT *
-FROM users
-WHERE id IN (SELECT friend_id FROM friends WHERE user_id=1);
 
-Добавить друга user_id = 1, friend_id = 2
 
-INSERT INTO friends(user_id, friend_id)
-VALUES(1,2);
 
-Удалить друга user_id = 1, friend_id = 2
-
-DELETE friends
-WHERE user_id = 1 AND friend_id = 2;
